@@ -2,7 +2,7 @@ DROP DATABASE expensetrackerdb;
 DROP USER root;
 CREATE USER root WITH password 'password';
 CREATE DATABASE expensetrackerdb WITH template=template0 owner=root;
-\CONNECT expensetrackerdb;
+\c expensetrackerdb;
 ALTER DEFAULT PRIVILEGES GRANT ALL ON tables TO root;
 ALTER DEFAULT PRIVILEGES GRANT ALL ON sequences TO root;
 

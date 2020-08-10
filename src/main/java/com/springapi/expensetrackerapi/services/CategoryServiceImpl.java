@@ -17,12 +17,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> fetchAllCategories(Integer userId) {
-        return null;
+        return categoryRepository.findAll(userId);
     }
 
     @Override
-    public Category fetchCategory(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
-        return null;
+    public Category fetchCategoryById(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
+        return categoryRepository.findById(userId, categoryId);
     }
 
     @Override
@@ -33,11 +33,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void UpdateCategory(Integer userId, Integer categoryId, Category category) throws EtBadRequestException {
-
+        categoryRepository.update(userId, categoryId, category);
     }
 
     @Override
     public void RemoveCategoryWithAllTransactions(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
-
+        categoryRepository.removeById(userId, categoryId);
     }
 }

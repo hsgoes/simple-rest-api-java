@@ -10,7 +10,7 @@ public interface CategoryService {
 
     List<Category> fetchAllCategories(Integer userId);
 
-    Category fetchCategory(Integer userId, Integer categoryId) throws EtResourceNotFoundException;
+    Category fetchCategoryById(Integer userId, Integer categoryId) throws EtResourceNotFoundException;
 
     Category addCategory(Integer userId, String title, String description) throws EtBadRequestException;
 

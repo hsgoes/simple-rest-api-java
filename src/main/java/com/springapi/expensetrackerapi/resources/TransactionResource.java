@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +62,24 @@ public class TransactionResource {
             List<Transaction> transactions = transactionService.fetchAllTransactions(userId, categoryId);
 
             return new ResponseEntity<>(transactions, HttpStatus.OK);
+        } else {
+            throw new EtBadRequestException("Token must be provided");
+        }
+    }
+
+    @PutMapping("/{transactionId}")
+    public ResponseEntity<Map<String, Boolean>> updateTransaction(HttpServletRequest request,
+                                                                  @PathVariable("categoryId") Integer categoryId,
+                                                                  @PathVariable("transactionId") Integer transactionId,
+                                                                  @RequestBody Transaction transaction){
+        String token = request.getHeader("Authorization");
+        if(token != null){
+            int userId = (Integer) request.getAttribute("userId");
+            transactionService.updateTransaction(userId, categoryId, transactionId, transaction);
+            Map<String, Boolean> map = new HashMap<>();
+            map.put("success", true);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } else {
             throw new EtBadRequestException("Token must be provided");
         }

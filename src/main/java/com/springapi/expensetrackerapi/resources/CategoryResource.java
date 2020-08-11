@@ -3,6 +3,7 @@ package com.springapi.expensetrackerapi.resources;
 
 import com.springapi.expensetrackerapi.domain.Category;
 import com.springapi.expensetrackerapi.exception.EtAuthException;
+import com.springapi.expensetrackerapi.exception.EtBadRequestException;
 import com.springapi.expensetrackerapi.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,12 +51,17 @@ public class CategoryResource {
     @PostMapping("")
     public ResponseEntity<Category> addCategory(HttpServletRequest request,
                                                 @RequestBody Map<String, Object> categoryMap) {
-        int userId = (Integer) request.getAttribute("userId");
-        String title = (String) categoryMap.get("title");
-        String description = (String) categoryMap.get("description");
-        Category category = categoryService.addCategory(userId, title, description);
+        String token = request.getHeader("Authorization");
+        if(token != null){
+            int userId = (Integer) request.getAttribute("userId");
+            String title = (String) categoryMap.get("title");
+            String description = (String) categoryMap.get("description");
+            Category category = categoryService.addCategory(userId, title, description);
 
-        return new ResponseEntity<>(category, HttpStatus.CREATED);
+            return new ResponseEntity<>(category, HttpStatus.CREATED);
+        } else {
+            throw new EtBadRequestException("Token must be provided");
+        }
     }
 
     @PutMapping("/{categoryId}")
@@ -71,6 +77,22 @@ public class CategoryResource {
             return new ResponseEntity<>(map, HttpStatus.OK);
         } else {
             throw new EtAuthException("The token must be provided");
+        }
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Map<String, Boolean>> deleteCategory(HttpServletRequest request,
+                                                               @PathVariable("categoryId") Integer categoryId){
+        String token = request.getHeader("Authorization");
+        if(token != null){
+            int userId = (Integer) request.getAttribute("userId");
+            categoryService.RemoveCategoryWithAllTransactions(userId, categoryId);
+            Map<String, Boolean> map = new HashMap<>();
+            map.put("success", true);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } else {
+            throw new EtBadRequestException("Token must be provided");
         }
     }
 }

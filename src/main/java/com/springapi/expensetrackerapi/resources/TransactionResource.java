@@ -55,6 +55,14 @@ public class TransactionResource {
     @GetMapping("")
     public ResponseEntity<List<Transaction>> getAllTransactions(HttpServletRequest request,
                                                                 @PathVariable("categoryId") Integer categoryId){
+        String token = request.getHeader("Authorization");
+        if(token != null){
+            int userId = (Integer) request.getAttribute("userId");
+            List<Transaction> transactions = transactionService.fetchAllTransactions(userId, categoryId);
 
+            return new ResponseEntity<>(transactions, HttpStatus.OK);
+        } else {
+            throw new EtBadRequestException("Token must be provided");
+        }
     }
 }

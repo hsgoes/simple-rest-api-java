@@ -17,7 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> fetchAllTransactions(Integer userId, Integer categoryId) {
-        return null;
+        return transactionRepository.findAll(userId, categoryId);
     }
 
     @Override

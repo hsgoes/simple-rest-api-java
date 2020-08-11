@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,11 +39,22 @@ public class TransactionResource {
     }
 
     @GetMapping("/{transactionId}")
-    public ResponseEntity<Transaction> getTransaction(@PathVariable Long transactionId){
-
-        
-
-        return new ResponseEntity<>();
+    public ResponseEntity<Transaction> getTransactionById(HttpServletRequest request,
+                                                          @PathVariable("categoryId") Integer categoryId,
+                                                          @PathVariable("transactionId") Integer transactionId){
+        String token = request.getHeader("Authorization");
+         if(token != null){
+            int userId = (Integer) request.getAttribute("userId");
+            Transaction transaction = transactionService.fetchTransactionById(userId, categoryId, transactionId);
+            return new ResponseEntity<>(transaction, HttpStatus.OK);
+        } else {
+            throw new EtBadRequestException("Token must be provided");
+        }
     }
 
+    @GetMapping("")
+    public ResponseEntity<List<Transaction>> getAllTransactions(HttpServletRequest request,
+                                                                @PathVariable("categoryId") Integer categoryId){
+
+    }
 }

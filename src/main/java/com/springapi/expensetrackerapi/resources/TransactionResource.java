@@ -84,4 +84,21 @@ public class TransactionResource {
             throw new EtBadRequestException("Token must be provided");
         }
     }
+
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<Map<String, Boolean>> deleteTransaction(HttpServletRequest request,
+                                                                  @PathVariable("categoryId") Integer categoryId,
+                                                                  @PathVariable("transactionId") Integer transactionId){
+        String token = request.getHeader("Authorization");
+        if(token != null){
+            int userId = (Integer) request.getAttribute("userId");
+            transactionService.removeTransaction(userId, categoryId, transactionId);
+            Map<String, Boolean> map = new HashMap<>();
+            map.put("success", true);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } else {
+            throw new EtBadRequestException("Token must be provided");
+        }
+    }
 }
